@@ -1,0 +1,110 @@
+name: Lint/Build/Test
+
+on:
+  workflow_call:
+    inputs:
+      NODE_VERSION:
+        required: false
+        type: string
+        default: 12
+      PYTHON_VERSION:
+        required: false
+        type: string
+      SKIP_TEST:
+        required: false
+        type: boolean
+
+# Ensure only a single instance of this workflow is running for a given PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Use specific Python version
+        if: ${{ inputs.PYTHON_VERSION }}
+        uses: actions/setup-python@v4 
+        with:
+          python-version: ${{ inputs.PYTHON_VERSION }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+          cache: 'npm'
+
+      - name: Install
+        run: |
+          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+          git config --global url."https://".insteadOf git://
+          npm ci
+
+      - name: Lint
+        run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Use specific Python version
+        if: ${{ inputs.PYTHON_VERSION }}
+        uses: actions/setup-python@v4 
+        with:
+          python-version: ${{ inputs.PYTHON_VERSION }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+          cache: 'npm'
+
+      - name: Install
+        run: |
+          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+          git config --global url."https://".insteadOf git://
+          npm ci
+
+      - name: Build
+        run: npm run build
+
+  test:
+    if: ${{ !inputs.SKIP_TEST }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Use specific Python version
+        if: ${{ inputs.PYTHON_VERSION }}
+        uses: actions/setup-python@v4 
+        with:
+          python-version: ${{ inputs.PYTHON_VERSION }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+          cache: 'npm'
+
+      - name: Install
+        run: |
+          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+          git config --global url."https://".insteadOf git://
+          npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
