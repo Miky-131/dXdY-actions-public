@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   build-and-publish-to-npm:
+    environment: master
     runs-on: ubuntu-latest
     permissions:
       contents: write
