@@ -112,8 +112,8 @@ jobs:
       - name: Use Ganache
         if: ${{ inputs.USE_GANACHE }}
         run: | 
-          npm i ganache@7.7.3 -g
-          ganache-cli -d -k=petersburg -i 1001
+          npm i -g ganache-cli@6
+          ganache-cli -d -k=petersburg -i 1001 -D
 
 
       - name: Test
