@@ -111,9 +111,9 @@ jobs:
 
       - name: Use Ganache
         if: ${{ inputs.USE_GANACHE }}
-        uses: docker://trufflesuite/ganache-cli:v6.12.2
-        entrypoint: ganache-cli
-        args: -d -k=petersburg -i 1001
+        run: | 
+          npm i ganache@6.12.2 -g
+          ganache-cli -d -k=petersburg -i 1001
 
 
       - name: Test
