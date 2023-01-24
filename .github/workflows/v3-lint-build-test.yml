@@ -111,7 +111,10 @@ jobs:
 
       - name: Use Ganache
         if: ${{ inputs.USE_GANACHE }}
-        run: docker-compose up -d -f docker-run-ganache.yml
+        run: | 
+          npm i ganache -g
+          ganache-cli -d -k=petersburg -i 1001
+
 
       - name: Test
         run: npm test
