@@ -13,6 +13,9 @@ on:
       SKIP_TEST:
         required: false
         type: boolean
+      USE_GANACHE:
+        required: false
+        type: boolean
 
 # Ensure only a single instance of this workflow is running for a given PR.
 concurrency:
@@ -105,6 +108,12 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Use Ganache
+        if: ${{ inputs.USE_GANACHE }}
+        run: | 
+          npm i -g ganache-cli@6
+          ganache-cli -d -k=petersburg -i 1001 &
 
       - name: Test
         run: npm test
